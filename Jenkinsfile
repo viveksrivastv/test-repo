@@ -29,6 +29,7 @@ pipeline {
                   hostPath:
                     path: /var/run/docker.sock
             """
+       }
   }
     stages {
 	stage('Git Checkout Against Integration Branch'){
