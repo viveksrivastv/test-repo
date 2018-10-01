@@ -7,27 +7,12 @@ podTemplate(label: 'mypod', containers: [
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
   ]) {
     node('mypod') {
-
         stage('Docker build') {
             container('docker') {
 		    sh 'docker build -t vivek12/myproject .'
                     sh "docker login -u vivek12 -p docker@123 "
                     sh "docker push vivek12/myproject:${env.BUILD_NUMBER} "
                 }
-            }
-        }
-
-        stage('do some kubectl work') {
-            container('kubectl') {
-
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', 
-                        credentialsId: 'dockerhub',
-                        usernameVariable: 'DOCKER_HUB_USER',
-                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
-                    
-                    sh "kubectl get nodes"
-                }
-            }
-        }
-    }
-}
+           }
+      }
+ }
