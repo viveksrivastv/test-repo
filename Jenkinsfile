@@ -1,4 +1,9 @@
 pipeline {
+    environment {
+    registry = "vivek12/docker-test"
+    registryCredential = 'dockerhub'
+    dockerImage = ""
+    }
     stages {
 	stage('Git Checkout Against Integration Branch'){
 	   steps {
@@ -6,12 +11,28 @@ pipeline {
 	       git url: 'https://github.com/viveksrivastv/test-repo.git', branch: 'integration'
 	   }
         }
-        stage('Build Docker Image') {
-           steps {
-		sh 'curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz && tar xzvf docker-17.04.0-ce.tgz && mv docker/docker /usr/local/bin'
-                sh 'docker build -t vivek12/myproject_integration .'
-            } 
+	stage ("Build image") {
+            steps {
+                echo 'Starting to build docker image'
+                script{
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
         }
+        stage("Push image to Dockerhub") {
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        //stage('Build Docker Image') {
+        //   steps {
+	//	sh 'curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz && tar xzvf docker-17.04.0-ce.tgz && mv docker/docker /usr/local/bin'
+        //        sh 'docker build -t vivek12/myproject_integration .'
+        //    } 
+        //}
         stage("Git Merge Against Pull Request") {
            steps {
                 script {
