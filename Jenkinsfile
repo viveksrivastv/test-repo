@@ -12,28 +12,25 @@ pipeline {
 --- 
 apiVersion: v1
 kind: Pod
-metadata: 
-  labels: 
+metadata:
+  labels:
     label: mypod
-spec: 
-  containers: 
-    - 
-      command: 
-        - cat
+spec:
+  containers:
+    - name: docker
       image: docker
-      name: docker
+      command:
+      - cat
       tty: true
-      volumeMounts: 
-        - 
+      volumeMounts:
+        - name: dockersock
           mountPath: /var/run/docker.sock
-          name: dockersock
-  volumes: 
-    - 
-      hostPath: 
+  volumes:
+    - name: dockersock
+      hostPath:
         path: /var/run/docker.sock
-      name: dockersock
 	   """
-       }
+	}
     }
     stages {
 	stage('Git Checkout Against Integration Branch'){
