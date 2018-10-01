@@ -21,6 +21,11 @@ pipeline {
                 command:
                 - cat
                 tty: true
+	      - name: kubectl
+                image: lachlanevenson/k8s-kubectl:v1.8.0
+                command:
+                - cat
+                tty: true
             """
        }
     }
@@ -51,11 +56,6 @@ pipeline {
 	            git url: 'https://github.com/viveksrivastv/test-repo.git', branch: 'master'
 	        }
         }
-	stage('Checkout Master Branch') {    
-            steps {
-                sh 'docker build -t vivek12/myproject .'
-            } 
-        }
         stage ("Build image") {
             steps {
                 container('docker') {
@@ -72,22 +72,11 @@ pipeline {
                 }
             }
         }
-        stage('Remove Previous Container'){
-           steps {
-               script {
-                   try {
-		      sh 'docker rm -f myproject'
-                   }
-                   catch(error){
-                      sh 'echo "No container running"'
-                   }
-               }
-           }
-		}
-        stage('Deploy to Environment'){
-           steps {		
-                sh 'docker run -d -p 8080:8080 --name myproject vivek12/myproject'
-            }       
+        stage('Deploy to Kubernetes') {
+            container('kubectl') {
+                    sh "kubectl create deployment myproject --image vivek12/docker-test"
+                }
+            }
         }
 	}
     post {
