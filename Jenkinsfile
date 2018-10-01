@@ -11,6 +11,7 @@ pipeline {
         }
         stage('Build Docker Image') {
            steps {
+		sh 'curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz && tar xzvf docker-17.04.0-ce.tgz && mv docker/docker /usr/local/bin'
                 sh 'docker build -t vivek12/myproject_integration .'
             } 
         }
