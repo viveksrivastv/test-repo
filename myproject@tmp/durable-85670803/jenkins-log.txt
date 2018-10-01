@@ -1,0 +1,10 @@
++ cd ..
++ git init
+Reinitialized existing Git repository in /home/jenkins/workspace/Sap-job/.git/
++ git config --global user.name Administrator
++ git config --global user.email admin@example.com
++ git pull origin integration
+From https://github.com/viveksrivastv/test-repo
+ * branch            integration -> FETCH_HEAD
+Already up to date.
++ git add --all
