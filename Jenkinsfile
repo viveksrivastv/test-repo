@@ -1,5 +1,4 @@
 pipeline {
-    agent any
     tools { 
         maven 'M3' 
     }
@@ -92,8 +91,7 @@ pipeline {
                 sh 'docker run -d -p 8080:8080 --name myproject vivek12/myproject'
             }       
         }
-        stage('Deploy to kubernetes'){
-            steps {
+	}
         agent {
         kubernetes {
             label 'mypod'
@@ -112,9 +110,8 @@ pipeline {
                 - cat
                 tty: true
             """
-       }}}
+       }
     }
-	}
     post {
         success {
             echo 'Job succeeeded!'
