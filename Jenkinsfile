@@ -1,7 +1,4 @@
 pipeline {
-    tools { 
-        maven 'M3' 
-    }
     stages {
 	stage('Git Checkout Against Integration Branch'){
 	   steps {
@@ -80,8 +77,8 @@ pipeline {
                   label: mypod
             spec:
               containers:
-              - name: maven
-                image: maven:alpine
+              - name: myproject
+                image: vivek12:myproject
                 command:
                 - cat
                 tty: true
