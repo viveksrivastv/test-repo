@@ -4,6 +4,9 @@ pipeline {
     registryCredential = 'dockerhub'
     dockerImage = ""
     }
+    tools { 
+        maven 'M3' 
+    }
     agent {
         kubernetes {
             label 'mypod'
@@ -21,11 +24,18 @@ pipeline {
                 command:
                 - cat
                 tty: true
+		volumeMounts:
+		- name: dockersock
+		  mountPath: "/var/run/docker.sock"
 	      - name: kubectl
                 image: lachlanevenson/k8s-kubectl:v1.8.0
                 command:
                 - cat
                 tty: true
+	      volumes:
+		- name: dockersock
+                  hostPath:
+		  path: /var/run/docker.sock
             """
        }
     }
