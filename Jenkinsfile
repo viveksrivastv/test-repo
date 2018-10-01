@@ -73,7 +73,8 @@ pipeline {
             }
         }
         stage('Deploy to Kubernetes') {
-            container('kubectl') {
+           steps{
+               container('kubectl') {
                     sh "kubectl create deployment myproject --image vivek12/docker-test"
                 }
             }
