@@ -40,6 +40,31 @@ pipeline {
        }
     }
     stages {
+	stage('Preparation') {
+            steps {
+                    sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    '''
+		    sh 'mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=myproject -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false'
+            }
+        }
+	 stage('Build') {
+           steps {
+            dir ('myproject') {
+                sh '''
+                cd ..
+                git init
+                git config --global user.name "Administrator"
+                git config --global user.email "admin@example.com"
+                git pull origin integration
+                git add myproject
+                git commit -m "Added myproject to Github"
+                git push https://viveksrivastv:github123@github.com/viveksrivastv/test-repo.git --all
+                '''
+                }   
+            } 
+        }
 	stage('Git Checkout Against Integration Branch'){
 	   steps {
 	       cleanWs()
