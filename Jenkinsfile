@@ -1,22 +1,31 @@
 node {
-  def container
+        stage("Main build") {
 
-  ansiColor('xterm') {
-    stage('Clone repository') {
-      checkout scm
-      shortCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-      println shortCommit
-    }
+            checkout scm
 
-    stage('Build image') {
-      container = docker.build('vivek12/docker1')
-    }
+            docker.image('ruby:2.3.1').inside {
 
-    stage('Push image') {
-      docker.withRegistry('', 'dockerhub') {
-        container.push("${shortCommit}")
-        container.push('latest')
-      }
-    }
-  }
+              stage("Install Bundler") {
+                sh "gem install bundler --no-rdoc --no-ri"
+              }
+
+              stage("Use Bundler to install dependencies") {
+                sh "bundle install"
+              }
+
+              stage("Build package") {
+                sh "bundle exec rake build:deb"
+              }
+
+              stage("Archive package") {
+                archive (includes: 'pkg/*.deb')
+              }
+
+           }
+
+        }
+
+        // Clean up workspace
+        step([$class: 'WsCleanup'])
+
 }
