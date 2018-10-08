@@ -5,6 +5,7 @@ node {
     stage('Clone repository') {
       checkout scm
       shortCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+      println shortCommit
     }
 
     stage('Build image') {
