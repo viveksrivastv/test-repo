@@ -13,7 +13,7 @@ node {
     }
 
     stage('Push image') {
-      docker.withRegistry('https://hub.docker.com/', 'dockerhub') {
+      docker.withRegistry('', 'dockerhub') {
         container.push("${shortCommit}")
         container.push('latest')
       }
