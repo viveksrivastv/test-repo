@@ -17,7 +17,7 @@ node {
     }
 
     stage('Push image') {
-      docker.withRegistry('https://nexus.repository', 'nexus-credentials-id') {
+      docker.withRegistry('https://hub.docker.com/', 'dockerhub') {
         container.push("${shortCommit}")
         container.push('latest')
       }
