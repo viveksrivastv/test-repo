@@ -1,10 +1,11 @@
-podTemplate(label: 'maven-golang', containers: [
+def label = "kubernetes"
+podTemplate(label: label, containers: [
   containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine',
     ttyEnabled: true, command: 'cat'),
   containerTemplate(name: 'golang', image: 'golang:1.8.0',
     ttyEnabled: true, command: 'cat')]) {
   
-  node('maven-golang') {
+  node(label) {
     stage('Build a Maven project') {
       git 'https://github.com/jenkinsci/kubernetes-plugin.git'
       container('maven') {
