@@ -1,31 +1,23 @@
-node {
-        stage("Main build") {
-
-            checkout scm
-
-            docker.image('ruby:2.3.1').inside {
-
-              stage("Install Bundler") {
-                sh "gem install bundler --no-rdoc --no-ri"
-              }
-
-              stage("Use Bundler to install dependencies") {
-                sh "bundle install"
-              }
-
-              stage("Build package") {
-                sh "bundle exec rake build:deb"
-              }
-
-              stage("Archive package") {
-                archive (includes: 'pkg/*.deb')
-              }
-
-           }
-
-        }
-
-        // Clean up workspace
-        step([$class: 'WsCleanup'])
-
-}
+podTemplate(label: 'maven-golang', containers: [
+  containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine',
+    ttyEnabled: true, command: 'cat'),
+  containerTemplate(name: 'golang', image: 'golang:1.8.0',
+    ttyEnabled: true, command: 'cat')]) {
+  
+  node('maven-golang') {
+    stage('Build a Maven project') {
+      git 'https://github.com/jenkinsci/kubernetes-plugin.git'
+      container('maven') {
+        sh 'mvn -B clean package'
+      }
+    }
+    stage('Build a Golang project') {
+      git url: 'https://github.com/hashicorp/terraform.git'
+      container('golang') {
+        sh """
+        mkdir -p /go/src/github.com/hashicorp
+        ln -s `pwd` /go/src/github.com/hashicorp/terraform
+        cd /go/src/github.com/hashicorp/terraform && make core-dev
+        """
+      }
+   }
