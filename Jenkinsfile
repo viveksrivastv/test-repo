@@ -20,4 +20,6 @@ podTemplate(label: 'maven-golang', containers: [
         cd /go/src/github.com/hashicorp/terraform && make core-dev
         """
       }
-   }
+    }
+  }
+}
