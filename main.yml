@@ -1,7 +1,5 @@
 ---
 - hosts: host
-  become: yes
-  become_user: root
   tasks:
   - name: httpd installation 
     yum: name=httpd state=installed 
